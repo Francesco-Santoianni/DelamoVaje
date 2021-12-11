@@ -24,7 +24,7 @@ class NumericalCSVFILE(CSVFILE):
                 if (datalist2[0] == 'Date'):
                     continue
                 print(float(datalist2[1]))       
-                
+               
 
 #print(object1.name)
 #print(object1.get_data())
