@@ -22,7 +22,7 @@ class CSVFile:
             print('Errore in apertura del file: "{}"'.format(e))
 
 
-    def get_data(self, ):
+    def get_data(self):
         
         if not self.can_read:
             

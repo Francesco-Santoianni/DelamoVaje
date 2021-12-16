@@ -4,7 +4,7 @@
 
 class CSVFile:
 
-    def __init__(self, name):
+    def __init__(self, name, interval_start, interval_end):
         
         # Setto il nome del file
         self.name = name
@@ -21,9 +21,15 @@ class CSVFile:
             self.can_read = False
             print('Errore in apertura del file: "{}"'.format(e))
 
+        self.interval_start = interval_start
+        self.interval_end = interval_end
 
-    def get_data(self):
-        
+
+    def get_data(self, interval_start, interval_end):
+
+        self.interval_start = interval_start
+        self.interval_end = interval_end
+
         if not self.can_read:
             
             # Se nell'init ho settato can_read a False vuol dire che
@@ -38,10 +44,13 @@ class CSVFile:
             data = []
     
             # Apro il file
-            my_file = open(self.name, 'r')
-
+            with open(self.name, 'r') as my_file:
+                
+                x = my_file.readlines()[self.interval_start:self.interval_end]
+                
+                
             # Leggo il file linea per linea
-            for line in my_file:
+            for line in x:
                 
                 # Faccio lo split di ogni linea sulla virgola
                 elements = line.split(',')
@@ -54,7 +63,7 @@ class CSVFile:
                 # bianchi all'inizio e alla fine di una stringa.
     
                 # Se NON sto processando l'intestazione...
-                if elements[0] != 'Date':
+                if elements[0] != '':
                         
                     # Aggiungo alla lista gli elementi di questa linea
                     data.append(elements)
@@ -121,10 +130,10 @@ class NumericalCSVFile(CSVFile):
 #  Corpo del programma
 #==============================
 
-mio_file = CSVFile(name='shampoo_sales.txt')
+mio_file = CSVFile(name='shampoo_sales.txt', interval_start=None, interval_end=None)
 print('Nome del file: "{}"'.format(mio_file.name))
-print('Dati contenuti nel file: "{}"'.format(mio_file.get_data()))
+print('Dati contenuti nel file: "{}"'.format(mio_file.get_data(interval_start=5, interval_end=9)))
 
-mio_file_numerico = NumericalCSVFile(name='shampoo_sales.txt')
-print('Nome del file: "{}"'.format(mio_file_numerico.name))
-print('Dati contenuti nel file: "{}"'.format(mio_file_numerico.get_data()))
+#mio_file_numerico = NumericalCSVFile(name='shampoo_sales.txt')
+#print('Nome del file: "{}"'.format(mio_file_numerico.name))
+#print('Dati contenuti nel file: "{}"'.format(mio_file_numerico.get_data()))
