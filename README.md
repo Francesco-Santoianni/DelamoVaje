@@ -1,1 +1,2 @@
 # DelamoVaje
+tukaj vadimo skupaj! 

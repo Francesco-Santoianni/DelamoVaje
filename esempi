@@ -1,7 +1,0 @@
-numbers = 'moja rit'
-
-# check if numbers is instance of list
-result = isinstance(numbers, str)
-print(result)
-
-# Output: True
