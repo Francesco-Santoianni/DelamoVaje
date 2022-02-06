@@ -11,7 +11,7 @@ class CSVFILE:
                 if (datalist2[0] == 'Date'):
                     continue
                 datalist1.append(datalist2)
-        return(datalist1)
+        return datalist1
 
 object1 = CSVFILE('shampoo_sales.txt')
 
