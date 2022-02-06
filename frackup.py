@@ -1,3 +1,4 @@
+#backup
 class ExamException(Exception):
     pass
 
@@ -42,22 +43,19 @@ def compute_avg_monthly_difference(time_series, first_year, last_year):
                 lista_raffinata.append(lista_raw[1])
                 #aggiungo la lista con gli elementi necessari alla lista finale
                 lista_di_liste.append(lista_raffinata)
- 
+
+        #return lista_di_liste
+   
     lista_scarsa = []
     matrice_mesi = [ [],[],[],[],[],[],[],[],[],[],[],[] ]
-
+        
     y = 0
-    for item in lista_di_liste:
-        if(lista_di_liste[y][0]==first_year):
-            continue
-        else:
-            y+=12
-
     for i in range(first_year, last_year+1):
         if(lista_di_liste[y][0]==i):
             for j in range(0, 12):
                 lista_scarsa.append(lista_di_liste[y][1])
                 y+=1
+
     
     contatore_mesi = 0  
     for item in lista_scarsa:
@@ -67,7 +65,7 @@ def compute_avg_monthly_difference(time_series, first_year, last_year):
         else:
             contatore_mesi+=1
     
-    incremento_medio = [ ] 
+    incremento_medio = [  ] 
     contatore_matrice = 0   
     while(contatore_matrice<12):
         incremento = 0
@@ -78,4 +76,4 @@ def compute_avg_monthly_difference(time_series, first_year, last_year):
     return incremento_medio
 
 
-print(compute_avg_monthly_difference(time_series, '1949', '1951'))
+print(compute_avg_monthly_difference(time_series, '1949', '1960'))
