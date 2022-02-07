@@ -1,4 +1,3 @@
-#backup
 class ExamException(Exception):
     pass
 
@@ -25,7 +24,7 @@ def compute_avg_monthly_difference(time_series, first_year, last_year):
     first_year = int(first_year)
     last_year = int(last_year)
     lista_di_liste = []
-    with open('data.csv') as x:
+    with open(time_series_file.name) as x:
         for line in x:
                 #divido gli elementi per ',' e per '-'
                 lista_raw = line.strip().split(',')
@@ -43,20 +42,23 @@ def compute_avg_monthly_difference(time_series, first_year, last_year):
                 lista_raffinata.append(lista_raw[1])
                 #aggiungo la lista con gli elementi necessari alla lista finale
                 lista_di_liste.append(lista_raffinata)
-
-        #return lista_di_liste
-   
+    #creo una lista d'appoggio e una matrice per i mesi
     lista_scarsa = []
     matrice_mesi = [ [],[],[],[],[],[],[],[],[],[],[],[] ]
-        
-    y = 0
-    for i in range(first_year, last_year+1):
-        if(lista_di_liste[y][0]==i):
-            for j in range(0, 12):
-                lista_scarsa.append(lista_di_liste[y][1])
-                y+=1
+    #scorro gli elementi finché non trovo l'elemento corrispondente a first_year, per poi iniziare da quello
+    contatore_elementi = 0
+    for item in lista_di_liste:
+        if(lista_di_liste[contatore_elementi][0]==first_year):
+            continue
+        else:
+            contatore_elementi+=12
 
-    
+    for i in range(first_year, last_year+1):
+        if(lista_di_liste[contatore_elementi][0]==i):
+            for j in range(0, 12):
+                lista_scarsa.append(lista_di_liste[contatore_elementi][1])
+                contatore_elementi+=1
+    #creo la matrice, con 12 liste(mesi), ogni lista contiene gli elementi per quel mese
     contatore_mesi = 0  
     for item in lista_scarsa:
         matrice_mesi[contatore_mesi].append(item)
@@ -64,8 +66,8 @@ def compute_avg_monthly_difference(time_series, first_year, last_year):
             contatore_mesi=0
         else:
             contatore_mesi+=1
-    
-    incremento_medio = [  ] 
+    #calcolo l'incremento tra i mesi e aggiungo i risultati uno per uno all'ultima lista, che poi returno
+    incremento_medio = [ ] 
     contatore_matrice = 0   
     while(contatore_matrice<12):
         incremento = 0
@@ -76,4 +78,4 @@ def compute_avg_monthly_difference(time_series, first_year, last_year):
     return incremento_medio
 
 
-print(compute_avg_monthly_difference(time_series, '1949', '1960'))
+print(compute_avg_monthly_difference(time_series, '1949', '1951'))

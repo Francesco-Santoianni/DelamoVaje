@@ -27,42 +27,52 @@ time_series = time_series_file.get_data()
 
 
 def compute_avg_monthly_difference(time_series, first_year, last_year):
-    Matrice= []
+    i=0;
+    valori =[]
+    matrice= []
+    lista_passeggeri= []
+    
+    
+    with open('data.csv') as x:
+        
+        for line in x:
+            lista_aerei=line.strip().split(',')
+            lista_aerei[0]= lista_aerei[0].split('-')
+
+            if (lista_aerei[0][0] != 'date'):
+                   
+                #converto in interi gli anni, i mesi e il numero di passeggeri ogni mese
+                lista_aerei[0][1] = int(lista_aerei[0][1])
+                lista_aerei[1]= int(lista_aerei[1])
+                lista_aerei[0][0]= int(lista_aerei[0][0])
+                    
+                lista_definitiva= []
+
+                lista_definitiva.append(lista_aerei[0][0])
+                lista_definitiva.append(lista_aerei[0][1])
+                lista_definitiva.append(lista_aerei[1]) 
+                valori.append(lista_definitiva)
+                lista_passeggeri.append(lista_aerei[1])
+
+   
+
+    #uso la matrice definita in precedenza e creo due cicli for: uno per gli anni e uno per i mesi
+    #il primo ciclo for lo uso per passare dal primo all'ultimo anno che ho messo in input, nell'ultima riga
+    count= 0
     for i in range(last_year-first_year+1):
-            Matrice.append([])
-            for j in range(12):
-                Matrice[i].append(None)
-
-
-    return Matrice
-        
-        
+        matrice.append([])
         
 
+        for j in range(12):
+            matrice[i].append(lista_passeggeri[j])
+            
 
+    return matrice  
+                        
+    
 
-
-
-avg_difference = compute_avg_monthly_difference(time_series, 1949, 1951)
+avg_difference = compute_avg_monthly_difference(time_series, 1949, 1950)
 print(avg_difference)
-
-
-
-"""with open('data.csv') as x:
-            for line in x:
-                lista_aerei2=line.strip().split(',')
-                lista_aerei2[0][0]= line.strip().split('-')
-                if (lista_aerei2[0] == 'Date'):
-                    continue
-
-                    lista_aerei2[0][0] = (lista_aerei2[0][0])
-                    lista_aerei2[1]= (lista_aerei2[1])
-
-                    lista_definitiva= []
-                    lista_definitiva.append(lista_aerei2[0][0])
-                    lista_definitiva.append(lista_aerei2[1]) 
-                    Matrice.append(lista_definitiva)
-            return Matrice"""
 
 
 
