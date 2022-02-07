@@ -65,13 +65,21 @@ def compute_avg_monthly_difference(time_series, first_year, last_year):
 
         for j in range(12):
             matrice[i].append(lista_passeggeri[j])
-            
-
+            #hoooooggg riiiiideeeerrr
+            #zapri youtube shorts
+            #eat my ass, sem ze jedu oprosti
+            #pij moje scanje, sem letteralmente komaj spil pol litra vode lmao
+            #gay
+            #no u 
+            #zakaj tvoj program ne dela?
+        #sem si postavil isto vprasanje dobro
+        #mi printira rit,
+        #grem na moj codice, pisi na chat od replit ce ces
     return matrice  
                         
     
 
-avg_difference = compute_avg_monthly_difference(time_series, 1949, 1950)
+avg_difference = compute_avg_monthly_difference(time_series, 1951, 1959)
 print(avg_difference)
 
 
