@@ -41,3 +41,25 @@ for i in generatore(1949,1951):
     print(i)
     x+=1
 """
+
+
+lista_linee = []
+for line in self.name:
+    lista_linee.append(line)
+
+contatore = 0
+misuratore = 0
+for line in self.name:
+    
+    for i in lista_linee:
+
+        if (i == line):
+            misuratore+=1
+
+    if(misuratore > 1):
+        raise ExamException(...)
+
+    contatore += 1
+
+
+

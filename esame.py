@@ -13,6 +13,22 @@ class CSVTimeSeriesFile:
         if ( type(self.name) != str ):
             raise ExamException('Errore: nome del file inserito non valido.')
 
+        #controllo duplicati
+        lista_linee = []
+        with open(self.name) as y:
+            for line in y:
+                lista_linee.append(line)
+       
+            misuratore = 0
+            for line in y:   
+                for i in lista_linee:
+                    if (i == line):
+                        misuratore+=1
+                if(misuratore >= 2):
+                    raise ExamException('Errore: la linea {0} è presente più volte nel file.'.format(line))
+                misuratore=0
+        
+
         lista1 = []
         with open(self.name) as x:
             for line in x:
@@ -20,10 +36,22 @@ class CSVTimeSeriesFile:
                 #skippo la prima linea
                 if (lista2[0] == 'date'):
                     continue
+                              
                 #se per un mese non ci sono info, non lo modifico
+                #converto prima in float, poi in int, per sicurezza
                 if (lista2[1] != ''):
+                    lista2[1] = float(lista2[1])
                     lista2[1] = int(lista2[1])
-                lista1.append(lista2)
+                    if (lista2[1]<0):
+                        lista2[1] = lista2[1]*(-1)
+                if (lista2[1] == ''):
+                    lista2[1] = 0
+                
+                lista3 = []
+                lista3.append(lista2[0])
+                lista3.append(lista2[1])
+
+                lista1.append(lista3)
         return lista1
 
 time_series_file = CSVTimeSeriesFile(name='data.csv')
@@ -35,7 +63,7 @@ except FileNotFoundError:
 
 #Print per vedere get_data()
 #print('\nVerifica get_data():\n')
-#print(time_series_file.get_data())
+print(time_series_file.get_data())
 ######################################################
 
 def compute_avg_monthly_difference(time_series, first_year, last_year):
@@ -57,16 +85,30 @@ def compute_avg_monthly_difference(time_series, first_year, last_year):
                 lista_raw[0] = lista_raw[0].split('-')
                 if (lista_raw[0][0] == 'date'):
                     continue
-                if (lista_raw[1] == ''):
-                    lista_raw[1] = '0'
-                #converto l'anno in int
-                lista_raw[0][0] = int(lista_raw[0][0])
-                #converto i passengers in int
-                lista_raw[1] = int(lista_raw[1])
+                
+                #skippo i float
+                lista_raw[1] = lista_raw[1].split('.')
+                if (len(lista_raw[1]) > 2):
+                    continue
+
+                if (lista_raw[1][0] != ''):
+                    #lista_raw[1] = float(lista_raw[1])
+                    lista_raw[1][0] = int(lista_raw[1][0])
+                    if (lista_raw[1][0]<0):
+                        lista_raw[1][0] = lista_raw[1][0]*(-1)
+                
+                if (lista_raw[1][0] == ''):
+                    lista_raw[1][0] = 0
+                try:
+                    #converto l'anno in int se possibile
+                    lista_raw[0][0] = int(lista_raw[0][0])
+                except:
+                    continue
+                
                 #aggiungo solo gli elementi che mi servono(anno e passengers)
                 lista_raffinata = []
                 lista_raffinata.append(lista_raw[0][0])
-                lista_raffinata.append(lista_raw[1])
+                lista_raffinata.append(lista_raw[1][0])
                 #aggiungo la lista con gli elementi necessari alla lista finale
                 lista_di_liste.append(lista_raffinata)
 
@@ -91,12 +133,12 @@ def compute_avg_monthly_difference(time_series, first_year, last_year):
     contatore_elementi = 0
     for item in lista_di_liste:
         if(lista_di_liste[contatore_elementi][0]==first_year):
-            continue
+            break
         else:
             contatore_elementi+=12
 
     for i in range(first_year, last_year+1):
-        if(lista_di_liste[contatore_elementi][0]==i):
+        #if(lista_di_liste[contatore_elementi][0]==i):
             for j in range(0, 12):
                 lista_scarsa.append(lista_di_liste[contatore_elementi][1])
                 contatore_elementi+=1
@@ -129,8 +171,8 @@ def compute_avg_monthly_difference(time_series, first_year, last_year):
                 
     return incremento_medio
 
-print('\nVerifica funzione:\n')
-print(compute_avg_monthly_difference(time_series, '1949', '1951'))
+#print('\nVerifica funzione:\n')
+print(compute_avg_monthly_difference(time_series, '1949', '1950'))
 ###################################################################
     
     

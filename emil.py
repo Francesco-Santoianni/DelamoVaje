@@ -1,5 +1,4 @@
-
-
+import numpy as np
 class ExamException(Exception):
     pass
 
@@ -29,26 +28,59 @@ print(time_series_file.name)
 
 def compute_avg_monthly_difference(time_series, primo_anno, ultimo_anno):
     matrice= []
+    primo_anno= int(primo_anno)
+    ultimo_anno= int(ultimo_anno)
+
+    
 
     for i in range(ultimo_anno-primo_anno+1):
         matrice.append([])
         
 
         for j in range(12):
-            matrice[i].append(None)
+            matrice[i].append([])
 
     for elemento in time_series:
         elemento[0]= elemento[0].split('-')
         elemento[0][1] = int(elemento[0][1])
         elemento[0][0] = int(elemento[0][0])
 
-        if elemento[0][0]>= primo_anno and elemento[0][0]<=ultimo_anno:
+        if (elemento[0][0]>= primo_anno and elemento[0][0]<=ultimo_anno):
             matrice[elemento[0][0]-primo_anno][elemento[0][1]-1]= elemento[1]
 
-    return matrice
+    #Adesso, finalmente, faremo la time time series
+    
+    lista_passeggeri= []
+    r=0
+    for elemento in matrice:
+        []
+        for i in range(12):
+            lista_passeggeri.append(elemento[i])
+            i+=1
+            
+            
+            
+            
+    '''item_corrente = elemento[i]
+        item_successivo = elemento[i+1]
+        item_successivo = elemento[i+2]
+
+        media_item1 = media_item1+ item_corrente - item_successivo
+        media_item2+= item_piu_successivo - item_
+            media_item= media_item1+media_item2
+
+            
+        variazione_media= media_item/i
+        matrice.append(variazione_media)'''
+       
 
 
-avg_difference = compute_avg_monthly_difference(time_series, 1949, 1951)
+    
+
+    return lista_passeggeri
+
+
+avg_difference = compute_avg_monthly_difference(time_series, '1949', '1951')
 print(avg_difference)
 
         
