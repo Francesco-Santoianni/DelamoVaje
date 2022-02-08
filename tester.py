@@ -93,34 +93,34 @@ class TestAndGrade(unittest.TestCase):
     # Controllo su cambi ora al limite
     #=====================================================
 
-    #def test_correctness_last_day(self):
-#
-        #with tempfile.NamedTemporaryFile('w+t') as file:
-#
+    def test_correctness_last_day(self):
+
+        with tempfile.NamedTemporaryFile('w+t') as file:
+
             ## Scrivo i contenuti nel file di test
-            #file.write('date,passengers\n')
-            #epoch=3600
-            #for i in range(3):
-                #for j in range(6):
-                    #if j<3:
-                        #data='{},{}\n'.format(epoch, 20+j)
-                    #else:
-                        #data='{},{}\n'.format(epoch, 26-j)
-                    #file.write(data)
-                    #epoch+=600
-#
-            #file.seek(0) # Torno all'inizio del file (necessario per i tmpfile)
-#
-            #time_series_file = CSVTimeSeriesFile(file.name)
-            #time_series = time_series_file.get_data()
-            #results = compute_avg_monthly_difference(time_series)
-#
-            #self.assertEqual(results[0], 1)
-            #self.assertEqual(results[1], 2)
-            #self.assertEqual(results[2], 2)
-#
-            #global score; score += 2 # Increase score
-#
+            file.write('date,passengers\n')
+            epoch=3600
+            for i in range(3):
+                for j in range(6):
+                    if j<3:
+                        data='{},{}\n'.format(epoch, 20+j)
+                    else:
+                        data='{},{}\n'.format(epoch, 26-j)
+                    file.write(data)
+                    epoch+=600
+
+            file.seek(0) # Torno all'inizio del file (necessario per i tmpfile)
+
+            time_series_file = CSVTimeSeriesFile(file.name)
+            time_series = time_series_file.get_data()
+            results = compute_avg_monthly_difference(time_series)
+
+            self.assertEqual(results[0], 1)
+            self.assertEqual(results[1], 2)
+            self.assertEqual(results[2], 2)
+
+            global score; score += 2 # Increase score
+
 
 
     #===================================================

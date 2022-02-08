@@ -1,4 +1,3 @@
-import numpy as np
 class ExamException(Exception):
     pass
 
@@ -21,10 +20,10 @@ class CSVTimeSeriesFile:
                     
         return values
     
-    
+
 time_series_file = CSVTimeSeriesFile(name='data.csv')
 time_series = time_series_file.get_data()
-print(time_series_file.name)
+
 
 def compute_avg_monthly_difference(time_series, primo_anno, ultimo_anno):
     matrice= []
@@ -49,39 +48,23 @@ def compute_avg_monthly_difference(time_series, primo_anno, ultimo_anno):
             matrice[elemento[0][0]-primo_anno][elemento[0][1]-1]= elemento[1]
 
     #Adesso, finalmente, faremo la time time series
+    M= matrice
     
-    lista_passeggeri= []
-    r=0
-    for elemento in matrice:
-        []
-        for i in range(12):
-            lista_passeggeri.append(elemento[i])
-            i+=1
-            
-            
-            
-            
-    '''item_corrente = elemento[i]
-        item_successivo = elemento[i+1]
-        item_successivo = elemento[i+2]
-
-        media_item1 = media_item1+ item_corrente - item_successivo
-        media_item2+= item_piu_successivo - item_
-            media_item= media_item1+media_item2
-
-            
-        variazione_media= media_item/i
-        matrice.append(variazione_media)'''
-       
-
-
+    variazione_mesi= 0
+    lista_variazione_mesi= []
     
-
-    return lista_passeggeri
+    for j in range(12):
+        somma_mesi= 0
+        for i in range(ultimo_anno-primo_anno):
+            somma_mesi+= (M[i+1][j]-M[i][j])
+        
+        variazione_mesi= somma_mesi/(ultimo_anno-primo_anno)
+        lista_variazione_mesi.append(variazione_mesi)
+        
+            
+        
+    return lista_variazione_mesi
 
 
 avg_difference = compute_avg_monthly_difference(time_series, '1949', '1951')
 print(avg_difference)
-
-        
-        

@@ -42,8 +42,8 @@ class CSVTimeSeriesFile:
                 if (lista2[1] != ''):
                     lista2[1] = float(lista2[1])
                     lista2[1] = int(lista2[1])
-                    if (lista2[1]<0):
-                        lista2[1] = lista2[1]*(-1)
+                    #if (lista2[1]<0):
+                    #    lista2[1] = lista2[1]*(-1)
                 if (lista2[1] == ''):
                     lista2[1] = 0
                 
@@ -52,9 +52,31 @@ class CSVTimeSeriesFile:
                 lista3.append(lista2[1])
 
                 lista1.append(lista3)
+
+        ### CODICE SOLO PER CONTROLLARE L’ORDINE DELLE DATE ###
+        anni = []
+        #prendo solo gli anni dal file e creo una lista anni
+        with open(self.name) as x:
+            for line in x:
+                lista_linea = line.strip().split(',')
+                lista_linea[0] = lista_linea[0].split('-')
+                #skippo la prima linea
+                if (lista_linea[0][0] == 'date'):
+                    continue
+            
+                lista_linea[0][0] = int(lista_linea[0][0])
+
+                anni.append(lista_linea[0][0])
+        #scorro gli elementi della lista anni e controllo l'ordine
+        anno_precedente = 0
+        for item in anni:
+            if (item<anno_precedente):
+                raise ExamException('Errore: le date non sono in ordine. L\'anno {0} viene dopo il {1}.'.format(anno_precedente, item))
+            anno_precedente = item
+
         return lista1
 
-time_series_file = CSVTimeSeriesFile(name='data.csv')
+time_series_file = CSVTimeSeriesFile(name='data2.csv')
 #controllo l'esistenza del file inserito
 try:
     time_series = time_series_file.get_data()
@@ -72,9 +94,15 @@ def compute_avg_monthly_difference(time_series, first_year, last_year):
         raise ExamException('Errore: first_year deve essere una stringa.')
     if (type(last_year) != str):
         raise ExamException('Errore: last_year deve essere una stringa.')
+    
     #cambio gli anni da stringhe a int, per comodità
     first_year = int(first_year)
     last_year = int(last_year)
+    #se first_year è maggiore di last_year, inverto
+    if (first_year>last_year):
+        variabile_appoggio = first_year
+        first_year = last_year
+        last_year = variabile_appoggio
     
     lista_di_liste = []
     with open(time_series_file.name) as x:
@@ -86,9 +114,9 @@ def compute_avg_monthly_difference(time_series, first_year, last_year):
                 if (lista_raw[0][0] == 'date'):
                     continue
                 
-                #skippo i float
+                #skippo i float e i numeri negativi
                 lista_raw[1] = lista_raw[1].split('.')
-                if (len(lista_raw[1]) > 2):
+                if (len(lista_raw[1]) >= 2):
                     continue
 
                 if (lista_raw[1][0] != ''):
@@ -124,6 +152,12 @@ def compute_avg_monthly_difference(time_series, first_year, last_year):
             raise ExamException('Errore: first_year non presente nel file csv/txt inserito.')
         elif (last_year not in lista_anni):
             raise ExamException('Errore: last_year non presente nel file csv/txt inserito.')
+        #controllo se gli anni sono in ordine crescente
+        anno_prima = 0
+        for item in lista_anni:
+            if (item<anno_prima):
+                raise ExamException('Errore: le date non sono in ordine.')
+            anno_prima = item
 
         
     #creo una lista d'appoggio e una matrice per i mesi
@@ -172,7 +206,7 @@ def compute_avg_monthly_difference(time_series, first_year, last_year):
     return incremento_medio
 
 #print('\nVerifica funzione:\n')
-print(compute_avg_monthly_difference(time_series, '1949', '1950'))
+print(compute_avg_monthly_difference(time_series, '1949', '1951'))
 ###################################################################
     
     

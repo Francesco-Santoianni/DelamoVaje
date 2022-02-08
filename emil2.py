@@ -20,10 +20,10 @@ class CSVTimeSeriesFile:
                     
         return values
     
-    
+
 time_series_file = CSVTimeSeriesFile(name='data.csv')
 time_series = time_series_file.get_data()
-print(time_series_file.name)
+
 
 def compute_avg_monthly_difference(time_series, primo_anno, ultimo_anno):
     matrice= []
@@ -47,8 +47,23 @@ def compute_avg_monthly_difference(time_series, primo_anno, ultimo_anno):
         if (elemento[0][0]>= primo_anno and elemento[0][0]<=ultimo_anno):
             matrice[elemento[0][0]-primo_anno][elemento[0][1]-1]= elemento[1]
 
+    #Adesso, finalmente, faremo la time time series
+    M= matrice
+    
+    variazione_mesi= 0
+    lista_variazione_mesi= []
+    
+    for j in range(12):
+        somma_mesi= 0
+        for i in range(ultimo_anno-primo_anno):
+            somma_mesi+= (M[i+1][j]-M[i][j])
         
-    return matrice
+        variazione_mesi= somma_mesi/(ultimo_anno-primo_anno)
+        lista_variazione_mesi.append(variazione_mesi)
+        
+            
+        
+    return lista_variazione_mesi
 
 
 avg_difference = compute_avg_monthly_difference(time_series, '1949', '1951')
