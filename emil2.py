@@ -66,7 +66,7 @@ def compute_avg_monthly_difference(time_series, primo_anno, ultimo_anno):
     return lista_variazione_mesi
 
 
-avg_difference = compute_avg_monthly_difference(time_series, '1949', '1951')
+avg_difference = compute_avg_monthly_difference(time_series, '1954', '1958')
 print(avg_difference)
 
 

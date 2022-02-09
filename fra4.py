@@ -28,7 +28,6 @@ class CSVTimeSeriesFile:
                     raise ExamException('Errore: la linea {0} è presente più volte nel file.'.format(line))
                 misuratore=0
         
-
         lista1 = []
         with open(self.name) as x:
             for line in x:
@@ -37,13 +36,21 @@ class CSVTimeSeriesFile:
                 if (lista2[0] == 'date'):
                     continue
                               
-                #se per un mese non ci sono info, non lo modifico
+                #se per un mese non ci sono info, metto 0
                 #converto prima in float, poi in int, per sicurezza
-                if (lista2[1] != ''):
-                    lista2[1] = float(lista2[1])
-                    lista2[1] = int(lista2[1])
-                    #if (lista2[1]<0):
-                    #    lista2[1] = lista2[1]*(-1)
+                #se i dati non sono divisi in due colonne, o se in una riga c'è solo un'informazione senza la virgola dopo, faccio raise IndexError
+                try:
+                    if (lista2[1] != ''):
+                        #ValueError in caso che uno dei dati non è di tipo numerico
+                        try:
+                            lista2[1] = float(lista2[1])
+                            lista2[1] = int(lista2[1])
+                        except ValueError:
+                            #raise ExamException('Errore: valori inseriti non validi.')
+                            lista2[1] = 0    
+                except IndexError:
+                    raise ExamException('Errore: i dati non sono divisi in due colonne.')
+
                 if (lista2[1] == ''):
                     lista2[1] = 0
                 
@@ -53,7 +60,7 @@ class CSVTimeSeriesFile:
 
                 lista1.append(lista3)
 
-        ### CODICE SOLO PER CONTROLLARE L’ORDINE DELLE DATE ###
+        #### CODICE SOLO PER CONTROLLARE L’ORDINE DELLE DATE ####
         anni = []
         #prendo solo gli anni dal file e creo una lista anni
         with open(self.name) as x:
@@ -63,8 +70,12 @@ class CSVTimeSeriesFile:
                 #skippo la prima linea
                 if (lista_linea[0][0] == 'date'):
                     continue
-            
-                lista_linea[0][0] = int(lista_linea[0][0])
+                #se un elemento non è di tipo numerico alzo un'eccezione
+                try:
+                    lista_linea[0][0] = int(lista_linea[0][0])
+                except ValueError:
+                    #raise ExamException('Errore: i valori inseriti devono essere di tipo numerico.')
+                    continue
 
                 anni.append(lista_linea[0][0])
         #scorro gli elementi della lista anni e controllo l'ordine
@@ -76,6 +87,7 @@ class CSVTimeSeriesFile:
 
         return lista1
 
+#creo un oggetto, time_series_file, e poi creo time_series
 time_series_file = CSVTimeSeriesFile(name='data.csv')
 #controllo l'esistenza del file inserito
 try:
@@ -83,19 +95,19 @@ try:
 except FileNotFoundError:
     raise ExamException('Errore: file di nome \'{0}\' non trovato.'.format(time_series_file.name))
 
-#Print per vedere get_data()
-print('\nVerifica get_data():\n')
-print(time_series_file.get_data())
-######################################################
+
 
 def compute_avg_monthly_difference(time_series, first_year, last_year):
     #controllo se first_year e last_year sono delle stringhe
+    if ((first_year == None) or (last_year == None)):
+        raise ExamException('Errore: first_year e/o last_year non inseriti.')
+    
     if (type(first_year) != str):
         raise ExamException('Errore: first_year deve essere una stringa.')
     if (type(last_year) != str):
         raise ExamException('Errore: last_year deve essere una stringa.')
 
-    #cambio gli anni da stringhe a int, per comodità
+    #cambio gli anni da stringhe a int
     first_year = int(first_year)
     last_year = int(last_year)
     #differenza tra last_year e first_year per calcolare la media più tardi
@@ -115,22 +127,21 @@ def compute_avg_monthly_difference(time_series, first_year, last_year):
                 lista_raw = line.strip().split(',')
                 lista_raw[0] = lista_raw[0].split('-')
                 if (lista_raw[0][0] == 'date'):
-                    continue
-                
-                #skippo i float
-                lista_raw[1] = lista_raw[1].split('.')
-                if (len(lista_raw[1]) >= 2):
-                    continue
+                    continue              
 
-                if (lista_raw[1][0] != ''):
-                    #lista_raw[1] = float(lista_raw[1])
-                    lista_raw[1][0] = int(lista_raw[1][0])
+                if (lista_raw[1] != ''):
+                    try:
+                        lista_raw[1] = float(lista_raw[1])
+                        lista_raw[1] = int(lista_raw[1])
+                    except ValueError:
+                        #raise ExamException('Errore: i valori inseriti devono essere di tipo numerico.')
+                        lista_raw[1] = 0
                     #se un numero è negativo lo moltiplico per -1
-                    if (lista_raw[1][0]<0):
-                        lista_raw[1][0] = lista_raw[1][0]*(-1)
+                    if (lista_raw[1]<0):
+                        lista_raw[1] = lista_raw[1]*(-1)
                 
-                if (lista_raw[1][0] == ''):
-                    lista_raw[1][0] = 0
+                if (lista_raw[1] == ''):
+                    lista_raw[1] = 0
                 try:
                     #converto l'anno in int se possibile
                     lista_raw[0][0] = int(lista_raw[0][0])
@@ -140,7 +151,7 @@ def compute_avg_monthly_difference(time_series, first_year, last_year):
                 #aggiungo solo gli elementi che mi servono(anno e passengers)
                 lista_raffinata = []
                 lista_raffinata.append(lista_raw[0][0])
-                lista_raffinata.append(lista_raw[1][0])
+                lista_raffinata.append(lista_raw[1])
                 #aggiungo la lista con gli elementi necessari alla lista finale
                 lista_di_liste.append(lista_raffinata)
 
@@ -210,8 +221,9 @@ def compute_avg_monthly_difference(time_series, first_year, last_year):
     return incremento_medio
 
 print('\nVerifica funzione:\n')
-avg_difference = compute_avg_monthly_difference(time_series, '1949', '1960')
-print(avg_difference)
+try:
+    avg_difference = compute_avg_monthly_difference(time_series, '1949', '1951')
+    print(avg_difference)
+except TypeError:
+    raise ExamException('Errore: non sono stati inseriti tutti i dati necessari.')
 ###################################################################
-    
-    
